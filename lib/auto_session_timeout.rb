@@ -10,8 +10,11 @@ module AutoSessionTimeout
       prepend_before_filter do |c|
         if c.session[:auto_session_expires_at] && c.session[:auto_session_expires_at] < Time.now
           c.send :reset_session
+          puts 'AAAAAAAAAAAA'
         else
-          unless c.request.original_url.start_with?(c.send(:active_url))
+          puts 'BBBBBBBBBBBBB'
+          unless c.request.original_url.start_with?(c.send(:providers_active_url)) || c.request.original_url.start_with?(c.send(:clients_active_url))
+            puts 'CCCCCCCCCCCCC'
             offset = seconds || (current_user.respond_to?(:auto_timeout) ? current_user.auto_timeout : nil)
             c.session[:auto_session_expires_at] = Time.now + offset if offset && offset > 0
           end

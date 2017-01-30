@@ -7,7 +7,10 @@ module AutoSessionTimeoutHelper
     code = <<JS
 if (typeof(Ajax) != 'undefined') {
   new Ajax.PeriodicalUpdater('', '#{active_url}', {frequency:#{frequency}, method:'get', onSuccess: function(e) {
-    if (e.responseText == 'false') window.location.href = '#{timeout_url}';
+    if (e.responseText == 'false'){
+      console.log('firstblock','#{timeout_url}')
+      window.location.href = '#{timeout_url}';
+      } 
   }});
 }else if(typeof(jQuery) != 'undefined'){
   function PeriodicalQuery() {
@@ -25,6 +28,7 @@ if (typeof(Ajax) != 'undefined') {
 } else {
   $.PeriodicalUpdater('#{active_url}', {minTimeout:#{frequency * 1000}, multiplier:0, method:'get', verbose:#{verbosity}}, function(remoteData, success) {
     if (success == 'success' && remoteData == 'false')
+      console.log('last else:','#{timeout_url}')
       window.location.href = '#{timeout_url}';
   });
 }
